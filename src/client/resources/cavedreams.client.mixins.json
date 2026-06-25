@@ -3,7 +3,6 @@
 	"package": "com.imwoki.cavedreams.client.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"ExampleClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

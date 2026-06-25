@@ -1,8 +1,8 @@
 package com.imwoki.cavedreams;
 
 import net.fabricmc.api.ModInitializer;
-
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Identifier;
+import com.imwoki.cavedreams.item.ModItems;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,14 +17,10 @@ public class CaveDreams implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
-
-		LOGGER.info("Hello Fabric world!");
+		ModItems.register();
 	}
 
-	public static ResourceLocation id(String path) {
-		return new ResourceLocation(MOD_ID, path);
+	public static Identifier id(String path) {
+		return new Identifier(MOD_ID, path);
 	}
 }
