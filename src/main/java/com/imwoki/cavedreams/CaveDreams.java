@@ -1,5 +1,6 @@
 package com.imwoki.cavedreams;
 
+import com.imwoki.cavedreams.event.DreamSleepEvents;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 import com.imwoki.cavedreams.item.ModItems;
@@ -18,6 +19,7 @@ public class CaveDreams implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ModItems.register();
+		DreamSleepEvents.register();
 	}
 
 	public static Identifier id(String path) {
