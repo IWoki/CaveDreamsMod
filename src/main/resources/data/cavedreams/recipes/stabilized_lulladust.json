@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "food",
+  "key": {
+    "#": {
+      "item": "minecraft:glow_berries"
+    },
+    "X": {
+      "item": "cavedreams:untamed_lulladust"
+    }
+  },
+  "pattern": [
+    "###",
+    "#X#",
+    "###"
+  ],
+  "result": {
+    "item": "cavedreams:stabilized_lulladust"
+  },
+  "show_notification": true
+}
