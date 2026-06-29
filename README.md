@@ -90,14 +90,6 @@
 
 ## 📸 Галерея
 
-**🔨 Крафт:**
-
-![Скриншот крафта](forreadme/screenshots/craft.png)
-
-*Отчистка дикой пыли с помощью ягод.*
-
----
-
 **😴 Процесс сна:**
 
 ![гиф сна](forreadme/gifs/eat.gif)
@@ -233,14 +225,6 @@ A floating neutral entity woven from moss and spores, spawning in **lush caves**
 ---
 
 ## 📸 Gallery
-
-**🔨 Crafting:**
-
-![Crafting screenshot](forreadme/screenshots/craft.png)
-
-*Purifying the wild dust with glow berries.*
-
----
 
 **😴 Sleeping process:**
 
