@@ -1,5 +1,6 @@
 package com.imwoki.cavedreams.mixin;
 
+import com.imwoki.cavedreams.event.LullabiteProximityHandler;
 import com.imwoki.cavedreams.util.DreamPlayer;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -17,23 +18,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin implements DreamPlayer {
 
-	@Unique
-	private static final TrackedData<Boolean> CAVEDREAMS_DREAMING =
+	@Unique private static final TrackedData<Boolean> CAVEDREAMS_DREAMING =
 			DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
-	@Unique
-	private long dreamWakeTick = -1;
-	@Unique
-	private boolean dreamUntamed;
-	@Unique
-	private boolean dreamStabilized;
-	@Unique
-	boolean dreamAllowWake = false;
+	@Unique private long dreamWakeTick = -1;
+	@Unique private boolean dreamUntamed;
+	@Unique private boolean dreamStabilized;
+	@Unique private boolean dreamLullabite;
+	@Unique boolean dreamAllowWake = false;
 
 	@Override
-	public boolean cavedreams_isAllowWake() {
-		return dreamAllowWake;
-	}
+	public boolean cavedreams_isAllowWake() { return dreamAllowWake; }
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void cavedreams$initDreamTracker(CallbackInfo ci) {
@@ -51,6 +46,12 @@ public abstract class PlayerEntityMixin implements DreamPlayer {
 	}
 
 	@Override
+	public void cavedreams_startLullabiteDream(long wakeTick) {
+		this.dreamLullabite = true;
+		cavedreams_startDream(wakeTick, false, false);
+	}
+
+	@Override
 	public boolean cavedreams_isDreaming() {
 		return ((PlayerEntity) (Object) this).getDataTracker().get(CAVEDREAMS_DREAMING);
 	}
@@ -64,6 +65,7 @@ public abstract class PlayerEntityMixin implements DreamPlayer {
 			sp.wakeUp(false, true);
 			dreamAllowWake = false;
 			applyDreamEffects(self);
+			LullabiteProximityHandler.onPlayerWakeUp(sp); // реакция мобов
 			resetDreamState(self);
 		}
 	}
@@ -76,6 +78,9 @@ public abstract class PlayerEntityMixin implements DreamPlayer {
 		} else if (dreamStabilized) {
 			player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 200, 0));
 			player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 400, 0));
+		} else if (dreamLullabite) {
+			player.addStatusEffect(new StatusEffectInstance(StatusEffects.HUNGER, 200, 0));
+			player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 200, 0));
 		}
 	}
 
@@ -84,6 +89,7 @@ public abstract class PlayerEntityMixin implements DreamPlayer {
 		dreamWakeTick = -1;
 		dreamUntamed = false;
 		dreamStabilized = false;
+		dreamLullabite = false;
 		self.getDataTracker().set(CAVEDREAMS_DREAMING, false);
 	}
 }

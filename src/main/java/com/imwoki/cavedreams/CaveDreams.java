@@ -1,5 +1,7 @@
 package com.imwoki.cavedreams;
 
+import com.imwoki.cavedreams.event.LullabiteProximityHandler;
+import com.imwoki.cavedreams.entity.ModEntities;
 import com.imwoki.cavedreams.event.DreamSleepEvents;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
@@ -20,6 +22,8 @@ public class CaveDreams implements ModInitializer {
 	public void onInitialize() {
 		ModItems.register();
 		DreamSleepEvents.register();
+		ModEntities.register();
+		LullabiteProximityHandler.register();
 	}
 
 	public static Identifier id(String path) {
