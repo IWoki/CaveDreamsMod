@@ -19,8 +19,9 @@ public class ModEntities {
     public static final EntityType<LullabiteEntity> LULLABITE = Registry.register(
             Registries.ENTITY_TYPE,
             new Identifier(CaveDreams.MOD_ID, "lullabite"),
-            FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, LullabiteEntity::new)
+            FabricEntityTypeBuilder.create(SpawnGroup.AXOLOTLS, LullabiteEntity::new)
                     .dimensions(EntityDimensions.fixed(0.6f, 1.0f))
+                    .spawnableFarFromPlayer()
                     .build()
     );
 
@@ -35,19 +36,19 @@ public class ModEntities {
                 LULLABITE,
                 SpawnRestriction.Location.NO_RESTRICTIONS,
                 Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-                (type, world, reason, pos, random) -> true
+                LullabiteEntity::canSpawn
         );
     }
 
-    // Спавн в мшистых пещерах, стайками по 4-6 особей - так же, как ванильные аксолотли
+    // Спавн в мшистых пещерах, стайками по 4-6 особей (как аксолотли)
     private static void registerSpawns() {
         BiomeModifications.addSpawn(
                 BiomeSelectors.includeByKey(BiomeKeys.LUSH_CAVES),
-                SpawnGroup.CREATURE,
+                SpawnGroup.AXOLOTLS,
                 LULLABITE,
-                10,  // вес спавна (как у аксолотля)
-                4,   // минимальный размер стайки
-                6    // максимальный размер стайки
+                10,
+                4,
+                6
         );
     }
 }

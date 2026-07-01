@@ -3,6 +3,7 @@ package com.imwoki.cavedreams.entity;
 import com.imwoki.cavedreams.event.LullabiteProximityHandler;
 import com.imwoki.cavedreams.item.ModItems;
 import net.minecraft.entity.*;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
@@ -19,7 +20,12 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeKeys;
 import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
@@ -64,6 +70,42 @@ public class LullabiteEntity extends AnimalEntity implements Flutterer {
                 .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.5)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 1.5)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0);
+    }
+
+    public static boolean canSpawn(EntityType<LullabiteEntity> type, ServerWorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
+        if (!world.getBiome(pos).matchesKey(BiomeKeys.LUSH_CAVES)) {
+            return false;
+        }
+        return isValidSpawnPosition(world, reason, pos);
+    }
+
+    public static boolean canSpawn(EntityType<LullabiteEntity> type, World world, SpawnReason reason, BlockPos pos, Random random) {
+        if (!world.getBiome(pos).matchesKey(BiomeKeys.LUSH_CAVES)) {
+            return false;
+        }
+        return isValidSpawnPosition(world, reason, pos);
+    }
+
+    private static boolean isValidSpawnPosition(BlockView world, SpawnReason reason, BlockPos pos) {
+        if (!world.getBlockState(pos).getFluidState().isEmpty()) {
+            return false;
+        }
+        if (!world.getBlockState(pos).isAir()) {
+            return false;
+        }
+        if (!world.getBlockState(pos.up()).isAir()) {
+            return false;
+        }
+        if (reason == SpawnReason.SPAWNER || reason == SpawnReason.COMMAND) {
+            return true;
+        }
+        for (int depth = 1; depth <= 5; depth++) {
+            BlockPos floor = pos.down(depth);
+            if (world.getBlockState(floor).isSolidBlock(world, floor)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
