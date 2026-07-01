@@ -117,7 +117,6 @@
 
 - [ ] Добавление моба **Засони** с уникальной моделью и механикой.
 - [ ] Новые звуки и анимации для моба.
-- [ ] Спавн во мшистых пещерах.
 - [ ] Достижения, связанные со сном и взаимодействием с мобами.
 
 ---
@@ -261,7 +260,6 @@ A floating neutral entity woven from moss and spores, spawning in **lush caves**
 
 - [ ] Add the **Lullabite** mob with a custom model and mechanics.
 - [ ] New sounds and animations for the mob.
-- [ ] Natural spawning in lush caves.
 - [ ] Advancements related to sleep and mob interaction.
 
 ---
