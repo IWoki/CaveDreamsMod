@@ -27,9 +27,24 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.UUID;
 
-public class LullabiteEntity extends AnimalEntity implements Flutterer {
+public class LullabiteEntity extends AnimalEntity implements Flutterer, GeoEntity {
+
+    // Анимации — названия должны совпадать с тем, что вы задали в Blockbench
+    private static final RawAnimation ANIM_IDLE   = RawAnimation.begin().thenLoop("animation.lullabite.idle");
+    private static final RawAnimation ANIM_FLY    = RawAnimation.begin().thenLoop("animation.lullabite.fly");
+    private static final RawAnimation ANIM_FEAR   = RawAnimation.begin().thenLoop("animation.lullabite.fear");
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private static final TrackedData<Boolean> FLYING = DataTracker.registerData(LullabiteEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private UUID fearedPlayerUUID = null;
@@ -37,10 +52,36 @@ public class LullabiteEntity extends AnimalEntity implements Flutterer {
 
     public LullabiteEntity(EntityType<? extends AnimalEntity> entityType, World world) {
         super(entityType, world);
-        // Плавный полёт, как у Allay/пчёл: широкий угол поворота (20) + сглаживание (true)
         this.moveControl = new FlightMoveControl(this, 20, true);
         this.setNoGravity(true);
     }
+
+    // ─── GeckoLib ────────────────────────────────────────────────────────────
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar registrar) {
+        registrar.add(new AnimationController<>(this, "main", 5, this::handleAnimation));
+    }
+
+    private PlayState handleAnimation(AnimationState<LullabiteEntity> state) {
+        // Если моб боится — запускаем анимацию бегства
+        if (fearedPlayerUUID != null && this.getWorld().getTime() < fearUntil) {
+            return state.setAndContinue(ANIM_FEAR);
+        }
+        // Если движется — анимация полёта
+        if (state.isMoving()) {
+            return state.setAndContinue(ANIM_FLY);
+        }
+        // Иначе — idle (парит на месте)
+        return state.setAndContinue(ANIM_IDLE);
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    // ─── DataTracker ─────────────────────────────────────────────────────────
 
     @Override
     protected void initDataTracker() {
@@ -51,18 +92,19 @@ public class LullabiteEntity extends AnimalEntity implements Flutterer {
     public boolean isFlying() { return this.dataTracker.get(FLYING); }
     public void setFlying(boolean flying) { this.dataTracker.set(FLYING, flying); }
 
+    // ─── Goals ───────────────────────────────────────────────────────────────
+
     @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
-        // Основная реакция на игрока (страх/группа/одиночество)
         this.goalSelector.add(1, new LullabiteBehaviorGoal(this, 1.2));
-        // Сбор в стаи / обычное блуждание, когда нет цели-игрока
         this.goalSelector.add(2, new LullabiteFlockGoal(this, 1.0));
-        // Размножение
         this.goalSelector.add(3, new AnimalMateGoal(this, 1.0));
         this.goalSelector.add(4, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(5, new LookAroundGoal(this));
     }
+
+    // ─── Attributes & Navigation ─────────────────────────────────────────────
 
     public static DefaultAttributeContainer.Builder createLullabiteAttributes() {
         return MobEntity.createMobAttributes()
@@ -70,42 +112,6 @@ public class LullabiteEntity extends AnimalEntity implements Flutterer {
                 .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.5)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 1.5)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0);
-    }
-
-    public static boolean canSpawn(EntityType<LullabiteEntity> type, ServerWorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
-        if (!world.getBiome(pos).matchesKey(BiomeKeys.LUSH_CAVES)) {
-            return false;
-        }
-        return isValidSpawnPosition(world, reason, pos);
-    }
-
-    public static boolean canSpawn(EntityType<LullabiteEntity> type, World world, SpawnReason reason, BlockPos pos, Random random) {
-        if (!world.getBiome(pos).matchesKey(BiomeKeys.LUSH_CAVES)) {
-            return false;
-        }
-        return isValidSpawnPosition(world, reason, pos);
-    }
-
-    private static boolean isValidSpawnPosition(BlockView world, SpawnReason reason, BlockPos pos) {
-        if (!world.getBlockState(pos).getFluidState().isEmpty()) {
-            return false;
-        }
-        if (!world.getBlockState(pos).isAir()) {
-            return false;
-        }
-        if (!world.getBlockState(pos.up()).isAir()) {
-            return false;
-        }
-        if (reason == SpawnReason.SPAWNER || reason == SpawnReason.COMMAND) {
-            return true;
-        }
-        for (int depth = 1; depth <= 5; depth++) {
-            BlockPos floor = pos.down(depth);
-            if (world.getBlockState(floor).isSolidBlock(world, floor)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -119,6 +125,40 @@ public class LullabiteEntity extends AnimalEntity implements Flutterer {
         nav.setCanEnterOpenDoors(true);
         return nav;
     }
+
+    // ─── Spawn predicate ─────────────────────────────────────────────────────
+
+    public static boolean canSpawn(EntityType<LullabiteEntity> type, ServerWorldAccess world,
+                                   SpawnReason reason, BlockPos pos, Random random) {
+        if (!world.getBiome(pos).matchesKey(BiomeKeys.LUSH_CAVES)) return false;
+        return isValidSpawnPosition(world, reason, pos);
+    }
+
+    private static boolean isValidSpawnPosition(BlockView world, SpawnReason reason, BlockPos pos) {
+        if (!world.getBlockState(pos).getFluidState().isEmpty()) return false;
+        if (!world.getBlockState(pos).isAir()) return false;
+        if (!world.getBlockState(pos.up()).isAir()) return false;
+        if (reason == SpawnReason.SPAWNER || reason == SpawnReason.COMMAND) return true;
+        for (int depth = 1; depth <= 5; depth++) {
+            BlockPos floor = pos.down(depth);
+            if (world.getBlockState(floor).isSolidBlock(world, floor)) return true;
+        }
+        return false;
+    }
+
+    // ─── Fear ────────────────────────────────────────────────────────────────
+
+    public void setFearedPlayer(PlayerEntity player, long durationTicks) {
+        this.fearedPlayerUUID = player.getUuid();
+        this.fearUntil = this.getWorld().getTime() + durationTicks;
+    }
+
+    public boolean isPlayerFeared(PlayerEntity player) {
+        if (fearedPlayerUUID == null || !player.getUuid().equals(fearedPlayerUUID)) return false;
+        return this.getWorld().getTime() < fearUntil;
+    }
+
+    // ─── Misc ─────────────────────────────────────────────────────────────────
 
     @Override
     public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
@@ -135,21 +175,10 @@ public class LullabiteEntity extends AnimalEntity implements Flutterer {
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         if (source.getAttacker() instanceof PlayerEntity player) {
-            // Не боимся креативных/зрителей
             if (!player.isCreative() && !player.isSpectator()) {
                 LullabiteProximityHandler.spreadFear(this.getWorld(), this.getBlockPos(), player, 20*60*12);
             }
         }
-    }
-
-    public void setFearedPlayer(PlayerEntity player, long durationTicks) {
-        this.fearedPlayerUUID = player.getUuid();
-        this.fearUntil = this.getWorld().getTime() + durationTicks;
-    }
-
-    public boolean isPlayerFeared(PlayerEntity player) {
-        if (fearedPlayerUUID == null || !player.getUuid().equals(fearedPlayerUUID)) return false;
-        return this.getWorld().getTime() < fearUntil;
     }
 
     @Override
@@ -162,6 +191,8 @@ public class LullabiteEntity extends AnimalEntity implements Flutterer {
             this.dropItem(ModItems.UNTAMED_LULLADUST);
         }
     }
+
+    // ─── NBT ─────────────────────────────────────────────────────────────────
 
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
