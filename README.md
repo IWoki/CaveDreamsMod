@@ -16,7 +16,7 @@
 - [📦 Установка](#-установка)
 - [🍄 Предметы](#-предметы)
 - [💤 Механика сна](#-механика-сна)
-- [🐛 Мобы (скоро!)](#-мобы-скоро)
+- [🐛 Мобы](#-мобы-скоро)
 - [📸 Галерея](#-галерея)
 - [🔮 Планы](#-планы)
 - [🛠 Вклад в разработку](#-вклад-в-разработку)
@@ -29,7 +29,7 @@
 - **Два уникальных предмета**, влияющих на сон и состояние игрока.
 - **Принудительный сон** прямо на земле, с изменением времени суток (даже днём!).
 - **Разные последствия** после пробуждения — от кошмаров до прилива сил.
-- **Будущий моб Засоня** — летающее нейтральное существо из мха, обитающее в пещерах.
+- **моб Засоня** — летающее нейтральное существо из мха, обитающее в пещерах.
 - **Совместимость с одиночной игрой и серверами** (время меняется только в локальных мирах).
 
 ---
@@ -38,7 +38,8 @@
 
 1. Установи [Fabric Loader](https://fabricmc.net/use/installer/) для версии **1.20.1**.
 2. Установи [Fabric API](https://modrinth.com/mod/fabric-api) (рекомендуется **0.92.2+1.20.1**).
-3. Скачай последнюю версию мода **Cave Dreams** из раздела [Releases](https://github.com/IWoki/CaveDreamsMod/releases).
+3. Установи [Gecolib](https://modrinth.com/mod/geckolib/version/jeyby0vh) для версии **1.20.1**
+4. Скачай последнюю версию мода **Cave Dreams** из раздела [Releases](https://github.com/IWoki/CaveDreamsMod/releases).
 4. Помести скачанный `.jar` файл в папку `mods` твоей Minecraft.
 5. Запускай игру и погружайся в дрёму!
 
@@ -71,20 +72,20 @@
 
 ---
 
-## 🐛 Мобы (скоро!)
+## 🐛 Мобы
 
 ### 🧵 Засоня (Lullabite)
 
 Летающее нейтральное создание, сотканное из мха и спор. Обитает во **мшистых пещерах**.  
 
-**Особенности поведения (в разработке):**
+**Особенности поведения:**
 - 🏃 Одиночная особь убегает от игрока.
 - 👥 Группа от 3 особей перестаёт бояться и приближается с любопытством.
 - 💀 Длительное нахождение рядом вызывает негативные эффекты у игрока.
 - 🎲 При убийстве дропает **Дикую Пыль сновидений** (20% шанс).
 - 💕 Могут размножаться после того, как игрок поспит рядом с ними.
 
-> *Модель, текстуры и звуки будут добавлены в следующих обновлениях.*
+> *звуки будут добавлены в следующих обновлениях.*
 
 ---
 
@@ -108,15 +109,14 @@
 
 **🐛 Моб Засоня:**
 
-*`[ WIP ]`*  
-*Появится позже!*
+![гиф Засонь](forreadme/gifs/lullabites.gif)
+*Крайне дружелюбны, не так ли?*
 
 ---
 
 ## 🔮 Планы
 
-- [ ] Добавление моба **Засони** с уникальной моделью и механикой.
-- [ ] Новые звуки и анимации для моба.
+- [ ] Новые звуки для моба.
 - [ ] Достижения, связанные со сном и взаимодействием с мобами.
 
 ---
@@ -159,7 +159,7 @@
 - [📦 Installation](#-installation)
 - [🍄 Items](#-items)
 - [💤 Sleep Mechanics](#-sleep-mechanics)
-- [🐛 Mobs (Coming Soon!)](#-mobs-coming-soon)
+- [🐛 Mobs](#-mobs-coming-soon)
 - [📸 Gallery](#-gallery)
 - [🔮 Roadmap](#-roadmap)
 - [🛠 Contributing](#-contributing)
@@ -172,7 +172,7 @@
 - **Two unique items** that affect sleep and player status.
 - **Forced sleep** on the bare ground with a time shift (even during the day!).
 - **Different consequences** after waking — from nightmares to a surge of power.
-- **Upcoming Lullabite mob** — a flying neutral creature made of moss, dwelling in caves.
+- **Lullabite mob** — a flying neutral creature made of moss, dwelling in caves.
 - **Compatible with singleplayer and multiplayer** (time changes only in local worlds).
 
 ---
@@ -181,9 +181,10 @@
 
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for version **1.20.1**.
 2. Install [Fabric API](https://modrinth.com/mod/fabric-api) (recommended **0.92.2+1.20.1**).
-3. Download the latest **Cave Dreams** mod from [Releases](https://github.com/IWoki/CaveDreamsMod/releases).
-4. Place the `.jar` file into your `mods` folder.
-5. Launch the game and drift into dreams!
+3. Install [Gecolib](https://modrinth.com/mod/geckolib/version/jeyby0vh) for **1.20.1**
+4. Download the latest **Cave Dreams** mod from [Releases](https://github.com/IWoki/CaveDreamsMod/releases).
+5. Place the `.jar` file into your `mods` folder.
+6. Launch the game and drift into dreams!
 
 ---
 
@@ -214,13 +215,13 @@
 
 ---
 
-## 🐛 Mobs (Coming Soon!)
+## 🐛 Mobs
 
 ### 🧵 Lullabite
 
 A floating neutral entity woven from moss and spores, spawning in **lush caves**.  
 
-**Planned behavior:**
+**behavior:**
 - 🏃 A lone Lullabite flees from the player.
 - 👥 A group of 3+ loses fear and approaches with curiosity.
 - 💀 Prolonged proximity applies negative effects to the player.
@@ -251,15 +252,14 @@ A floating neutral entity woven from moss and spores, spawning in **lush caves**
 
 **🐛 Lullabite Mob:**
 
-*`[ WIP ]`*  
-*Coming later!*
+![Lullabites gif](forreadme/gifs/lullabites.gif)
+*They're really friendly, aren't they?*
 
 ---
 
 ## 🔮 Roadmap
 
-- [ ] Add the **Lullabite** mob with a custom model and mechanics.
-- [ ] New sounds and animations for the mob.
+- [ ] New sounds for the mob.
 - [ ] Advancements related to sleep and mob interaction.
 
 ---
