@@ -1,13 +1,13 @@
-package com.imwoki.cavedreams.client.render;
+package com.imwoki.cavedreams.client;
 
-import com.imwoki.cavedreams.entity.LullabiteEntity;
-import com.imwoki.cavedreams.client.model.LullabiteModel;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import com.imwoki.cavedreams.client.render.LullabiteRenderer;
+import com.imwoki.cavedreams.entity.ModEntities;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 
-public class LullabiteRenderer extends GeoEntityRenderer<LullabiteEntity> {
-
-	public LullabiteRenderer(EntityRendererFactory.Context context) {
-		super(context, new LullabiteModel());
+public class CaveDreamsClient implements ClientModInitializer {
+	@Override
+	public void onInitializeClient() {
+		EntityRendererRegistry.register(ModEntities.LULLABITE, LullabiteRenderer::new);
 	}
 }

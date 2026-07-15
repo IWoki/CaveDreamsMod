@@ -6,17 +6,6 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class LullabiteModel extends GeoModel<LullabiteEntity> {
 
-    // Пути к файлам которые вы экспортируете из Blockbench:
-    //
-    // Геометрия (модель):
-    //   src/main/resources/assets/cavedreams/geo/lullabite.geo.json
-    //
-    // Анимации:
-    //   src/main/resources/assets/cavedreams/animations/lullabite.animation.json
-    //
-    // Текстура:
-    //   src/main/resources/assets/cavedreams/textures/entity/lullabite.png
-
     @Override
     public Identifier getModelResource(LullabiteEntity entity) {
         return new Identifier("cavedreams", "geo/lullabite.geo.json");
