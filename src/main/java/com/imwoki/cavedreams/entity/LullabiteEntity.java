@@ -1,0 +1,210 @@
+package com.imwoki.cavedreams.entity;
+
+import com.imwoki.cavedreams.event.LullabiteProximityHandler;
+import com.imwoki.cavedreams.item.ModItems;
+import net.minecraft.entity.*;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.control.FlightMoveControl;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.PassiveEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeKeys;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
+import java.util.UUID;
+
+public class LullabiteEntity extends AnimalEntity implements Flutterer, GeoEntity {
+
+    private static final RawAnimation ANIM_IDLE   = RawAnimation.begin().thenLoop("idle");
+    private static final RawAnimation ANIM_SCARED   = RawAnimation.begin().thenLoop("scared");
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    private static final TrackedData<Boolean> FLYING = DataTracker.registerData(LullabiteEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private UUID fearedPlayerUUID = null;
+    private long fearUntil = 0;
+
+    public LullabiteEntity(EntityType<? extends AnimalEntity> entityType, World world) {
+        super(entityType, world);
+        this.moveControl = new FlightMoveControl(this, 20, true);
+        this.setNoGravity(true);
+    }
+
+    // ─── GeckoLib ────────────────────────────────────────────────────────────
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar registrar) {
+        registrar.add(new AnimationController<>(this, "main", 5, this::handleAnimation));
+    }
+
+    private PlayState handleAnimation(AnimationState<LullabiteEntity> state) {
+        if (fearedPlayerUUID != null && this.getWorld().getTime() < fearUntil) {
+            return state.setAndContinue(ANIM_SCARED);
+        }
+        else {
+            return state.setAndContinue(ANIM_IDLE);
+        }
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    // ─── DataTracker ─────────────────────────────────────────────────────────
+
+    @Override
+    protected void initDataTracker() {
+        super.initDataTracker();
+        this.dataTracker.startTracking(FLYING, false);
+    }
+
+    public boolean isFlying() { return this.dataTracker.get(FLYING); }
+    public void setFlying(boolean flying) { this.dataTracker.set(FLYING, flying); }
+
+    // ─── Goals ───────────────────────────────────────────────────────────────
+
+    @Override
+    protected void initGoals() {
+        this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(1, new LullabiteBehaviorGoal(this, 1.2));
+        this.goalSelector.add(2, new LullabiteFlockGoal(this, 1.0));
+        this.goalSelector.add(3, new AnimalMateGoal(this, 1.0));
+        this.goalSelector.add(4, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.add(5, new LookAroundGoal(this));
+    }
+
+    // ─── Attributes & Navigation ─────────────────────────────────────────────
+
+    public static DefaultAttributeContainer.Builder createLullabiteAttributes() {
+        return MobEntity.createMobAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 5.0)
+                .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.5)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 1.5)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0);
+    }
+
+    @Override
+    public boolean isInAir() { return true; }
+
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        BirdNavigation nav = new BirdNavigation(this, world);
+        nav.setCanPathThroughDoors(false);
+        nav.setCanSwim(true);
+        nav.setCanEnterOpenDoors(true);
+        return nav;
+    }
+
+    // ─── Spawn predicate ─────────────────────────────────────────────────────
+
+    public static boolean canSpawn(EntityType<LullabiteEntity> type, ServerWorldAccess world,
+                                   SpawnReason reason, BlockPos pos, Random random) {
+        if (!world.getBiome(pos).matchesKey(BiomeKeys.LUSH_CAVES)) return false;
+        return isValidSpawnPosition(world, reason, pos);
+    }
+
+    private static boolean isValidSpawnPosition(BlockView world, SpawnReason reason, BlockPos pos) {
+        if (!world.getBlockState(pos).getFluidState().isEmpty()) return false;
+        if (!world.getBlockState(pos).isAir()) return false;
+        if (!world.getBlockState(pos.up()).isAir()) return false;
+        if (reason == SpawnReason.SPAWNER || reason == SpawnReason.COMMAND) return true;
+        for (int depth = 1; depth <= 5; depth++) {
+            BlockPos floor = pos.down(depth);
+            if (world.getBlockState(floor).isSolidBlock(world, floor)) return true;
+        }
+        return false;
+    }
+
+    // ─── Fear ────────────────────────────────────────────────────────────────
+
+    public void setFearedPlayer(PlayerEntity player, long durationTicks) {
+        this.fearedPlayerUUID = player.getUuid();
+        this.fearUntil = this.getWorld().getTime() + durationTicks;
+    }
+
+    public boolean isPlayerFeared(PlayerEntity player) {
+        if (fearedPlayerUUID == null || !player.getUuid().equals(fearedPlayerUUID)) return false;
+        return this.getWorld().getTime() < fearUntil;
+    }
+
+    // ─── Misc ─────────────────────────────────────────────────────────────────
+
+    @Override
+    public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public PassiveEntity createChild(ServerWorld world, PassiveEntity other) {
+        return ModEntities.LULLABITE.create(world);
+    }
+
+    @Override
+    public void onDeath(DamageSource source) {
+        super.onDeath(source);
+        if (source.getAttacker() instanceof PlayerEntity player) {
+            if (!player.isCreative() && !player.isSpectator()) {
+                LullabiteProximityHandler.spreadFear(this.getWorld(), this.getBlockPos(), player, 20*60*12);
+            }
+        }
+    }
+
+    @Override
+    public boolean isPushable() { return true; }
+
+    @Override
+    protected void dropLoot(DamageSource source, boolean causedByPlayer) {
+        super.dropLoot(source, causedByPlayer);
+        if (causedByPlayer && this.random.nextFloat() < 0.2f) {
+            this.dropItem(ModItems.UNTAMED_LULLADUST);
+        }
+    }
+
+    // ─── NBT ─────────────────────────────────────────────────────────────────
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putBoolean("Flying", this.isFlying());
+        if (fearedPlayerUUID != null) {
+            nbt.putUuid("FearedPlayer", fearedPlayerUUID);
+            nbt.putLong("FearUntil", fearUntil);
+        }
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        this.setFlying(nbt.getBoolean("Flying"));
+        if (nbt.contains("FearedPlayer")) {
+            fearedPlayerUUID = nbt.getUuid("FearedPlayer");
+            fearUntil = nbt.getLong("FearUntil");
+        }
+    }
+}

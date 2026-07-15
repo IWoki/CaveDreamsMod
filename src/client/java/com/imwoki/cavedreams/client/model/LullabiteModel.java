@@ -1,0 +1,23 @@
+package com.imwoki.cavedreams.client.model;
+
+import com.imwoki.cavedreams.entity.LullabiteEntity;
+import net.minecraft.util.Identifier;
+import software.bernie.geckolib.model.GeoModel;
+
+public class LullabiteModel extends GeoModel<LullabiteEntity> {
+
+    @Override
+    public Identifier getModelResource(LullabiteEntity entity) {
+        return new Identifier("cavedreams", "geo/lullabite.geo.json");
+    }
+
+    @Override
+    public Identifier getTextureResource(LullabiteEntity entity) {
+        return new Identifier("cavedreams", "textures/entity/lullabite.png");
+    }
+
+    @Override
+    public Identifier getAnimationResource(LullabiteEntity entity) {
+        return new Identifier("cavedreams", "animations/lullabite.animation.json");
+    }
+}

@@ -3,7 +3,7 @@
 	"id": "cavedreams",
 	"version": "${version}",
 	"name": "Cave dreams",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": ":D",
 	"authors": [
 		"ImWoki"
 	],
@@ -33,6 +33,7 @@
 		"fabricloader": ">=0.19.3",
 		"minecraft": "~1.20.1",
 		"java": ">=17",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"geckolib": "*"
 	}
 }
