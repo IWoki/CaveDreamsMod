@@ -110,6 +110,7 @@
 **🐛 Моб Засоня:**
 
 ![гиф Засонь](forreadme/gifs/lullabites.gif)
+
 *Крайне дружелюбны, не так ли?*
 
 ---
@@ -253,6 +254,7 @@ A floating neutral entity woven from moss and spores, spawning in **lush caves**
 **🐛 Lullabite Mob:**
 
 ![Lullabites gif](forreadme/gifs/lullabites.gif)
+
 *They're really friendly, aren't they?*
 
 ---
