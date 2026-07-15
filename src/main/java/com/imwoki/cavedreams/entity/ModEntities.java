@@ -20,7 +20,7 @@ public class ModEntities {
             Registries.ENTITY_TYPE,
             new Identifier(CaveDreams.MOD_ID, "lullabite"),
             FabricEntityTypeBuilder.create(SpawnGroup.AXOLOTLS, LullabiteEntity::new)
-                    .dimensions(EntityDimensions.fixed(0.6f, 1.0f))
+                    .dimensions(EntityDimensions.fixed(0.30f, 0.380f))
                     .spawnableFarFromPlayer()
                     .build()
     );

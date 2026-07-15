@@ -39,8 +39,8 @@ import java.util.UUID;
 
 public class LullabiteEntity extends AnimalEntity implements Flutterer, GeoEntity {
 
-    private static final RawAnimation ANIM_IDLE   = RawAnimation.begin().thenLoop("animation.lullabite.idle");
-    private static final RawAnimation ANIM_SCARED   = RawAnimation.begin().thenLoop("animation.lullabite.scared");
+    private static final RawAnimation ANIM_IDLE   = RawAnimation.begin().thenLoop("idle");
+    private static final RawAnimation ANIM_SCARED   = RawAnimation.begin().thenLoop("scared");
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -62,7 +62,6 @@ public class LullabiteEntity extends AnimalEntity implements Flutterer, GeoEntit
     }
 
     private PlayState handleAnimation(AnimationState<LullabiteEntity> state) {
-        // Если моб боится — запускаем анимацию бегства
         if (fearedPlayerUUID != null && this.getWorld().getTime() < fearUntil) {
             return state.setAndContinue(ANIM_SCARED);
         }
