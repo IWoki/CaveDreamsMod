@@ -221,7 +221,7 @@ A floating neutral entity woven from moss and spores, spawning in **lush caves**
 - 🎲 Drops **Untamed Lulladust** on death (20% chance).
 - 💕 Can breed after the player sleeps near them.
 
-> *Model, textures and sounds will be added in future updates.*
+> *sounds will be added in future updates.*
 
 ---
 
