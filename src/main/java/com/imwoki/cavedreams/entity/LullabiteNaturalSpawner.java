@@ -18,6 +18,7 @@ public final class LullabiteNaturalSpawner {
     private static final int AREA_CAP = 12;
     private static final int SPAWN_RADIUS = 48;
     private static final int MAX_ATTEMPTS = 80;
+    private static final int MIN_GROUP_DISTANCE = 28;
 
     private LullabiteNaturalSpawner() {
     }
@@ -86,7 +87,7 @@ public final class LullabiteNaturalSpawner {
         }
     }
 
-    private static BlockPos findSpawnPosNear(World world, BlockPos anchor, Random random) {
+    private static BlockPos findSpawnPosNear(ServerWorld world, BlockPos anchor, Random random) {
         for (int attempt = 0; attempt < 16; attempt++) {
             BlockPos pos = anchor.add(
                     random.nextBetween(-6, 6),
@@ -100,18 +101,27 @@ public final class LullabiteNaturalSpawner {
         return null;
     }
 
-    private static BlockPos findSpawnPos(World world, BlockPos center, Random random) {
+    private static BlockPos findSpawnPos(ServerWorld world, BlockPos center, Random random) {
         for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
             BlockPos pos = center.add(
                     random.nextBetween(-SPAWN_RADIUS, SPAWN_RADIUS),
                     random.nextBetween(-24, 24),
                     random.nextBetween(-SPAWN_RADIUS, SPAWN_RADIUS)
             );
-            if (LullabiteEntity.canSpawn(ModEntities.LULLABITE, world, SpawnReason.NATURAL, pos, random)) {
-                return pos;
+            if (!LullabiteEntity.canSpawn(ModEntities.LULLABITE, world, SpawnReason.NATURAL, pos, random)) {
+                continue;
             }
+            if (isTooCloseToExistingGroup(world, pos)) {
+                continue;
+            }
+            return pos;
         }
         return null;
+    }
+
+    private static boolean isTooCloseToExistingGroup(ServerWorld world, BlockPos pos) {
+        Box nearbyArea = new Box(pos).expand(MIN_GROUP_DISTANCE);
+        return !world.getEntitiesByType(ModEntities.LULLABITE, nearbyArea, entity -> entity.isAlive()).isEmpty();
     }
 
     private static void spawnOne(ServerWorld world, BlockPos pos, Random random) {
