@@ -12,6 +12,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import java.util.*;
+import com.imwoki.cavedreams.CaveDreams;
 
 public class LullabiteProximityHandler {
     private static final int RADIUS = 16;
@@ -68,7 +69,7 @@ public class LullabiteProximityHandler {
     private static void forceSleep(ServerPlayerEntity player, ServerWorld world) {
         if (!(player instanceof DreamPlayer dreamPlayer)) return;
         long wakeTick = world.getTime() + 200; // 10 сек
-        if (!world.getServer().isDedicated()) {
+        if (CaveDreams.isTrueSingleplayer(world.getServer())) {
             long timeOfDay = world.getTimeOfDay();
             long days = timeOfDay / 24000;
             long nextTime = (timeOfDay % 24000 < 13000) ? days * 24000 + 13000 : (days + 1) * 24000;
@@ -76,6 +77,8 @@ public class LullabiteProximityHandler {
         }
         dreamPlayer.cavedreams_startLullabiteDream(wakeTick);
     }
+
+
 
     /** Распространяет страх, только если игрок не креатив/спектатор */
     public static void spreadFear(World world, BlockPos center, PlayerEntity player, long durationTicks) {

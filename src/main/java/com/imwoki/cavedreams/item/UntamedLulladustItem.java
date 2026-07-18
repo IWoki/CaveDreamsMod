@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
+import com.imwoki.cavedreams.CaveDreams;
 
 public class UntamedLulladustItem extends Item {
     public UntamedLulladustItem(Settings settings) {
@@ -37,6 +38,20 @@ public class UntamedLulladustItem extends Item {
             if (player instanceof DreamPlayer dreamPlayer) {
                 dreamPlayer.cavedreams_startDream(wakeTick, true, false);
                 player.getItemCooldownManager().set(this, 600);
+            }
+
+            if (CaveDreams.isTrueSingleplayer(world.getServer()) && world instanceof ServerWorld serverWorld) {
+                long timeOfDay = serverWorld.getTimeOfDay();
+                long days = timeOfDay / 24000;
+                long nextTime;
+                if (timeOfDay % 24000 < 13000) {
+                    // day -> night
+                    nextTime = days * 24000 + 13000;
+                } else {
+                    // night -> day
+                    nextTime = (days + 1) * 24000;
+                }
+                serverWorld.setTimeOfDay(nextTime);
             }
         }
         return itemStack;
