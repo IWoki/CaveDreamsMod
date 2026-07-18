@@ -29,11 +29,11 @@ public class ModItems {
                     .build())
     );
 
-    // Яйцо спавна Lullabite - пастельные "сонные" цвета (основной/крапинки), как у ванильных яиц
+    // Яйцо спавна Lullabite
     public static final Item LULLABITE_SPAWN_EGG = new SpawnEggItem(
             ModEntities.LULLABITE,
-            0xA9C8FF,
-            0xFFE9A8,
+            0x7fbe47,
+            0xe446c5,
             new FabricItemSettings()
     );
 

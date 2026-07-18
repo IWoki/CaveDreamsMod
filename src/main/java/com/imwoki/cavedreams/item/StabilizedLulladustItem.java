@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
+import com.imwoki.cavedreams.CaveDreams;
 
 public class StabilizedLulladustItem extends Item {
     public StabilizedLulladustItem(Settings settings) {
@@ -35,6 +36,18 @@ public class StabilizedLulladustItem extends Item {
             if (player instanceof DreamPlayer dreamPlayer) {
                 dreamPlayer.cavedreams_startDream(wakeTick, false, true);
                 player.getItemCooldownManager().set(this, 1200);
+            }
+
+            if (CaveDreams.isTrueSingleplayer(world.getServer()) && world instanceof ServerWorld serverWorld) {
+                long timeOfDay = serverWorld.getTimeOfDay();
+                long days = timeOfDay / 24000;
+                long nextTime;
+                if (timeOfDay % 24000 < 13000) {
+                    nextTime = days * 24000 + 13000;
+                } else {
+                    nextTime = (days + 1) * 24000;
+                }
+                serverWorld.setTimeOfDay(nextTime);
             }
         }
         return itemStack;

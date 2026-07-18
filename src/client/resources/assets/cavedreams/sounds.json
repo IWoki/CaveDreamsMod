@@ -1,0 +1,26 @@
+{
+  "lullabite_idle_1": {
+    "subtitle": "subtitle.entity.cavedreams.lullabite.idle",
+    "sounds": [ "cavedreams:lullabite/idle1" ]
+  },
+  "lullabite_idle_2": {
+    "subtitle": "subtitle.entity.cavedreams.lullabite.idle",
+    "sounds": [ "cavedreams:lullabite/idle2" ]
+  },
+  "lullabite_idle_3": {
+    "subtitle": "subtitle.entity.cavedreams.lullabite.idle",
+    "sounds": [ "cavedreams:lullabite/idle3" ]
+  },
+  "lullabite_hurt_1": {
+    "subtitle": "subtitle.entity.cavedreams.lullabite.hurt",
+    "sounds": [ "cavedreams:lullabite/hurt1" ]
+  },
+  "lullabite_hurt_2": {
+    "subtitle": "subtitle.entity.cavedreams.lullabite.hurt",
+    "sounds": [ "cavedreams:lullabite/hurt2" ]
+  },
+  "lullabite_death": {
+    "subtitle": "subtitle.entity.cavedreams.lullabite.death",
+    "sounds": [ "cavedreams:lullabite/death" ]
+  }
+}

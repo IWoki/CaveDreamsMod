@@ -1,4 +1,8 @@
 {
   "item.cavedreams.untamed_lulladust": "Дикая пыль сноведений",
-  "item.cavedreams.stabilized_lulladust": "Чистая пыль сновидений"
+  "item.cavedreams.stabilized_lulladust": "Чистая пыль сновидений",
+  "item.cavedreams.lullabite_spawn_egg": "Яйцо призыва люллабита",
+  "subtitle.entity.cavedreams.lullabite.idle": "Люллабит попискивает",
+  "subtitle.entity.cavedreams.lullabite.hurt": "Люллабит скулит",
+  "subtitle.entity.cavedreams.lullabite.death": "Люллабит погибает"
 }

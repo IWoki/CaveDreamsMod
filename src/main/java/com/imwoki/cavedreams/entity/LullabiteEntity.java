@@ -36,6 +36,8 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.UUID;
+import com.imwoki.cavedreams.sound.ModSounds;
+import net.minecraft.sound.SoundEvent;
 
 public class LullabiteEntity extends AnimalEntity implements Flutterer, GeoEntity {
 
@@ -150,6 +152,40 @@ public class LullabiteEntity extends AnimalEntity implements Flutterer, GeoEntit
     public boolean isPlayerFeared(PlayerEntity player) {
         if (fearedPlayerUUID == null || !player.getUuid().equals(fearedPlayerUUID)) return false;
         return this.getWorld().getTime() < fearUntil;
+    }
+
+    // ─── Sounds ──────────────────────────────────────────────────────────────
+
+    @Nullable
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return switch (this.random.nextInt(3)) {
+            case 0 -> ModSounds.LULLABITE_IDLE_1;
+            case 1 -> ModSounds.LULLABITE_IDLE_2;
+            default -> ModSounds.LULLABITE_IDLE_3;
+        };
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return this.random.nextBoolean() ? ModSounds.LULLABITE_HURT_1 : ModSounds.LULLABITE_HURT_2;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getDeathSound() {
+        return ModSounds.LULLABITE_DEATH;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.6F;
+    }
+
+    @Override
+    public int getMinAmbientSoundDelay() {
+        return 140;
     }
 
     // ─── Misc ─────────────────────────────────────────────────────────────────

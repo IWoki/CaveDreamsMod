@@ -18,7 +18,6 @@
 - [💤 Механика сна](#-механика-сна)
 - [🐛 Мобы](#-мобы-скоро)
 - [📸 Галерея](#-галерея)
-- [🔮 Планы](#-планы)
 - [🛠 Вклад в разработку](#-вклад-в-разработку)
 - [📜 Лицензия](#-лицензия)
 
@@ -107,13 +106,6 @@
 
 ---
 
-## 🔮 Планы
-
-- [ ] Новые звуки для моба.
-- [ ] Достижения, связанные со сном и взаимодействием с мобами.
-
----
-
 ## 🛠 Вклад в разработку
 
 Буду рад любым предложениям и баг-репортам!  
@@ -154,7 +146,6 @@
 - [💤 Sleep Mechanics](#-sleep-mechanics)
 - [🐛 Mobs](#-mobs-coming-soon)
 - [📸 Gallery](#-gallery)
-- [🔮 Roadmap](#-roadmap)
 - [🛠 Contributing](#-contributing)
 - [📜 License](#-license-1)
 
@@ -240,13 +231,6 @@ A floating neutral entity woven from moss and spores, spawning in **lush caves**
 ![Lullabites gif](forreadme/gifs/lullabites.gif)
 
 *They're really friendly, aren't they?*
-
----
-
-## 🔮 Roadmap
-
-- [ ] New sounds for the mob.
-- [ ] Advancements related to sleep and mob interaction.
 
 ---
 
