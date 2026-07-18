@@ -1,4 +1,8 @@
 {
   "item.cavedreams.untamed_lulladust": "Untamed Lulladust",
-  "item.cavedreams.stabilized_lulladust": "Stabilized Lulladust"
+  "item.cavedreams.stabilized_lulladust": "Stabilized Lulladust",
+  "item.cavedreams.lullabite_spawn_egg": "Lullabite Spawn Egg",
+  "subtitle.entity.cavedreams.lullabite.idle": "Lullabite chirps",
+  "subtitle.entity.cavedreams.lullabite.hurt": "Lullabite whimpers",
+  "subtitle.entity.cavedreams.lullabite.death": "Lullabite dies"
 }
