@@ -84,8 +84,6 @@
 - 🎲 При убийстве дропает **Дикую Пыль сновидений** (20% шанс).
 - 💕 Могут размножаться после того, как игрок поспит рядом с ними.
 
-> *звуки будут добавлены в следующих обновлениях.*
-
 ---
 
 ## 📸 Галерея
@@ -211,8 +209,6 @@ A floating neutral entity woven from moss and spores, spawning in **lush caves**
 - 💀 Prolonged proximity applies negative effects to the player.
 - 🎲 Drops **Untamed Lulladust** on death (20% chance).
 - 💕 Can breed after the player sleeps near them.
-
-> *sounds will be added in future updates.*
 
 ---
 
