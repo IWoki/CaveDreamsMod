@@ -3,9 +3,9 @@
 	"id": "cavedreams",
 	"version": "${version}",
 	"name": "Cave dreams",
-	"description": ":D",
+	"description": "Making lush caves feel a little more alive",
 	"authors": [
-		"ImWoki"
+		"IWoki"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
